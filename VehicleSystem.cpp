@@ -1,13 +1,12 @@
 #include "VehicleSystem.h"
-#include "Math.h"
 
 VehicleSystem::VehicleSystem()
 {
 	gameWidth = 1280;
 	gameHeight = 960;
-	weight[0] = 0.0f;
-	weight[1] = 0.0f;
-	weight[2] = 0.0f;
+	weight[0] = 1.0f;
+	weight[1] = 1.0f;
+	weight[2] = 1.0f;
 	this->count = 0;
 
 	gridWidth = gameWidth / COLUMNS;

@@ -11,6 +11,7 @@
 #include<iostream>
 #include <array>
 #include "Vehicle.h"
+#include "Math.h"
 
 using namespace std;
 using namespace sf;
@@ -18,7 +19,7 @@ using namespace sf;
 class VehicleSystem: public Drawable, public Transformable
 {
 public:
-	//float r = 10.0f;
+	//float r = 10;
 	int gameWidth;
 	int gameHeight;
 	int count;

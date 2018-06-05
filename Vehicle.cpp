@@ -7,22 +7,19 @@ Vehicle::Vehicle(Vector2f location)
 	//acceleration = Vector2f(0, 0);
 	this->location = location;
 	this->velocity = Vector2f((rand() % 200 - 100) * 0.01f, (rand() % 200 - 100) * 0.01f);
-	this->acceleration = Vector2f(0, 0);
-	this->r = 10.0f;
+	this->acceleration = Vector2f(0.0, 0.0);
+	this->r = 10;
 	this->maxSpeed = 0.1f;
 	this->maxForce = 0.1f;
 
-	gameWidth = 1280;
-	gameHeight = 960;
-
-	weight[0] = 0.0f;
-	weight[1] = 0.0f;
-	weight[2] = 0.0f;
+	weight[0] = 1.0f;
+	weight[1] = 1.0f;
+	weight[2] = 1.0f;
 
 	triangle.setPointCount(3);
-	triangle.setPoint(0, sf::Vector2f(r, 0));
-	triangle.setPoint(1, sf::Vector2f(r * 0.5, r * 1.866));
-	triangle.setPoint(2, sf::Vector2f(r * 1.5, r * 1.866));
+	triangle.setPoint(0, Vector2f(r, 0));
+	triangle.setPoint(1, Vector2f(r * 0.5, r * 1.866));
+	triangle.setPoint(2, Vector2f(r * 1.5, r * 1.866));
 	triangle.setFillColor(Color::White);
 	triangle.setOrigin(r, r);
 	triangle.setPosition(location);
@@ -40,7 +37,8 @@ void Vehicle::update()
 	location += velocity;
 	acceleration = Vector2f(0, 0);
 	triangle.setPosition(location);
-	triangle.setRotation(atan2(velocity.x, -velocity.y) * 180 / 3.14f);
+	//triangle.setRotation(atan2(velocity.x, -velocity.y) * 180 / 3.14f);
+	triangle.setRotation(Math::rotation(velocity));
 }
 
 void Vehicle::boundaries()
@@ -99,17 +97,17 @@ void Vehicle::applyForce(Vector2f steer)
 
 void Vehicle::flock(vector<Vehicle*>* const v)
 {
-	Vector2f sep = Separation(v);
-	Vector2f ali = Alignment(v);
-	Vector2f coh = Cohision(v);
+	Vector2f separate = Separation(v);
+	Vector2f align = Alignment(v);
+	Vector2f cohision = Cohision(v);
 
-	sep *= weight[0];
-	ali *= weight[1];
-	coh *= weight[2];
+	separate *= weight[0];
+	align *= weight[1];
+	cohision *= weight[2];
 
-	applyForce(sep);
-	applyForce(ali);
-	applyForce(coh);
+	applyForce(separate);
+	applyForce(align);
+	applyForce(cohision);
 }
 
 Vector2f Vehicle::Seek(Vector2f target)
@@ -125,15 +123,15 @@ Vector2f Vehicle::Seek(Vector2f target)
 
 Vector2f Vehicle::Separation(vector<Vehicle*>* const v)
 {
-	float desiredseparation = r * 5;
+	float distance = 50.0f;
 	Vector2f steer = Vector2f(0, 0);
 	int count = 0;
 	for (Vehicle *other : *v) 
 	{
-		float d = Math::magnitude(location - other->location);
-		if (d > 0 && d < desiredseparation) 
+		float d = Math::magnitude(this->location - other->location);
+		if (d > 0 && d < distance) 
 		{
-			Vector2f dif = location - other->location;
+			Vector2f dif = this->location - other->location;
 			dif = Math::normalize(dif);
 			dif /= d;
 			steer += dif;
@@ -145,7 +143,8 @@ Vector2f Vehicle::Separation(vector<Vehicle*>* const v)
 		steer /= count * 1.0f;
 	}
 
-	if (Math::magnitude(steer) > 0) {
+	if (Math::magnitude(steer) > 0) 
+	{
 		steer = Math::normalize(steer);
 		steer *= maxSpeed;
 		steer -= velocity;
@@ -185,7 +184,7 @@ Vector2f Vehicle::Alignment(vector<Vehicle*>* const v)
 
 Vector2f Vehicle::Cohision(vector<Vehicle*>* const v)
 {
-	float distance = 20.0f;
+	float distance = 50.0f;
 	Vector2f sum = Vector2f(0, 0);
 	int count = 0;
 	for (auto *other : *v)
@@ -207,6 +206,26 @@ Vector2f Vehicle::Cohision(vector<Vehicle*>* const v)
 	{
 		return Vector2f(0, 0);
 	}
+}
+
+Vector2f Vehicle::getPosition()
+{
+	return location;
+}
+
+Vector2f Vehicle::getVelocity()
+{
+	return velocity;
+}
+
+float Vehicle::getmaxSpeed()
+{
+	return maxSpeed;
+}
+
+void Vehicle::setSpeed(float speed)
+{
+	maxSpeed = speed;
 }
 
 void Vehicle::setWeight(float separate, float align, float cohision)

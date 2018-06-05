@@ -36,3 +36,26 @@ void Math::limit(Vector2f &vector, float limit)
 		vector = vector / magnitude * limit;
 	}
 }
+
+float Math::rotation(Vector2f vector) 
+{
+	if (vector.y <= 0) 
+	{
+		return asin(vector.x / sqrt(vector.x * vector.x + vector.y * vector.y)) * 180.0f / 3.14f;
+	}
+	else 
+	{
+		if (vector.x == 0) 
+		{
+			return 180.0f;
+		}
+		else if (vector.x > 0) 
+		{
+			return atan(vector.y / vector.x) * 180.0f / 3.14f + 90.0f;
+		}
+		else if (vector.x < 0) 
+		{
+			return atan(vector.y / vector.x) * 180.0f / 3.14f - 90.0f;
+		}
+	}
+}

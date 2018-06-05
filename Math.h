@@ -21,4 +21,5 @@ public:
 	float static dotproduct(Vector2f v1, Vector2f v2);
 	float static map(float val, Vector2f min, Vector2f max);
 	void static limit(Vector2f &vector, float limit);
+	float static rotation(Vector2f vector);
 };

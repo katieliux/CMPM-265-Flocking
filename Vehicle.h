@@ -25,8 +25,8 @@ public:
 	float maxForce;
 	float r;
 	float weight[3];
-	int gameWidth;
-	int gameHeight;
+	int gameWidth = 1280;
+	int gameHeight = 960;
 
 	Vehicle(Vector2f location);
 	~Vehicle();
@@ -42,5 +42,9 @@ public:
 	Vector2f Alignment(vector<Vehicle*>* const v);
 	Vector2f Cohision(vector<Vehicle*>* const v);
 	void setWeight(float separate, float align, float cohision);
+	Vector2f getPosition();
+	Vector2f getVelocity();
+	float getmaxSpeed();
+	void setSpeed(float speed);
 	virtual void draw(RenderTarget& target, RenderStates states) const;
 };
